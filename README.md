@@ -4,12 +4,15 @@ Adds a Trail3D node to Godot.
 
 It is compatible with GDScript, C#, and Rust!
 
+<img src="https://github.com/SomeRanDev/Godot-Trail3D/blob/main/demo.gif"/>
+
 ## Credits
 
-This is ported from [@axilirate](https://github.com/axilirate)'s [gist](https://gist.github.com/axilirate/96a3e77d597c2527582dbc79aecbab70).<br>
+This is a port of [@axilirate](https://github.com/axilirate)'s [gist](https://gist.github.com/axilirate/96a3e77d597c2527582dbc79aecbab70).<br>
 This version is rewritten from GDScript to Rust, and it's optimized to remove the expensive list manipulations.
 
-[@axilirate](https://github.com/axilirate)'s version is a Godot 4.0 port from [Oussama BOUKHELF](https://github.com/OBKF)'s [Godot 3 Trail System](https://github.com/OBKF/Godot-Trail-System) ([LICENSE](https://github.com/OBKF/Godot-Trail-System/blob/master/LICENSE))
+[@axilirate](https://github.com/axilirate)'s version is a Godot 4.0 port from [Oussama BOUKHELF](https://github.com/OBKF)'s [Godot 3 Trail System](https://github.com/OBKF/Godot-Trail-System)<br>
+You can view and comply with their license [here](https://github.com/OBKF/Godot-Trail-System/blob/master/LICENSE).
 
 I also added support for a color gradient inspired by [KindoSaur's YouTube video](https://www.youtube.com/watch?v=vKrrxKS-lcA).
 
