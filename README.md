@@ -25,3 +25,11 @@ I also added support for a color gradient inspired by [KindoSaur's YouTube video
 3) Run `BUILD.bat` (on Windows) or `BUILD.sh` (on Linux).
 
 5) Finally, copy the `addons/SomeRanDev_Trail3D/` folder into your project's `addons/` folder.
+
+## How to Use
+
+The `Trail3D` node should not be moved directly; instead, add it as a child to a mobile node.
+
+To make the colors work, add a `Material Override` and enable `Vertex Color -> Use as Albedo` (or read from `COLOR` in a shader material).
+
+If you want transparency, you also need to enable it in the material.
