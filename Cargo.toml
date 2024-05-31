@@ -1,0 +1,15 @@
+[package]
+name = "godot_trail_3d"
+authors = ["Robert Borghese (SomeRanDev)"]
+description = "A native Godot addon that adds a Trail3D node to Godot."
+version = "1.0.0"
+edition = "2021"
+readme = "README.md"
+license = "MIT"
+keywords = ["godot", "gamedev"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+godot = { git = "https://github.com/godot-rust/gdext", branch = "master" }
