@@ -12,4 +12,4 @@ keywords = ["godot", "gamedev"]
 crate-type = ["cdylib"]
 
 [dependencies]
-godot = { git = "https://github.com/godot-rust/gdext", branch = "master", rev = "e4603ced53be5fd90902928ae17ff64f22d30b96" }
+godot = { git = "https://github.com/godot-rust/gdext", rev = "e4603ced53be5fd90902928ae17ff64f22d30b96" }
