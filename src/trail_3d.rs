@@ -78,7 +78,7 @@ impl Point {
 }
 
 /// Input for `Trail3D` `alignment`
-#[derive(GodotConvert, Var, Debug)]
+#[derive(GodotConvert, Var, Debug, Export)]
 #[godot(via = i32)]
 enum AlignmentType {
 	View,
@@ -87,7 +87,7 @@ enum AlignmentType {
 }
 
 /// Input for `Trail3D` `axe`
-#[derive(GodotConvert, Var, Debug)]
+#[derive(GodotConvert, Var, Debug, Export)]
 #[godot(via = i32)]
 enum Axis {
 	X,
@@ -98,10 +98,11 @@ enum Axis {
 /// Generates a 3D trail that follows its parent node.
 /// This node should always have a parent.
 #[derive(GodotClass)]
-#[class(base = MeshInstance3D)]
+#[class(init, base = MeshInstance3D)]
 pub struct Trail3D {
 	base: Base<MeshInstance3D>,
 
+	#[init(val = ImmediateMesh::new_gd())]
 	immediate_mesh: Gd<ImmediateMesh>,
 
 	points: Vec<Point>,
@@ -116,21 +117,60 @@ pub struct Trail3D {
 
 	_points_last_id: i64,
 
-	#[export] emit: bool,
-	#[export] distance: f32,
-	#[export(range = (0.0, 99999.0))] segments: u32,
-	#[export] lifetime: f64,
-	#[export(range = (0.0, 99999.0))] base_width: f32,
-	#[export] tiled_texture: bool,
-	#[export] tiling: i32,
-	#[export] width_curve: Option<Gd<Curve>>,
-	#[export(range = (0.0, 3.0))] smoothing_iterations: i32,
-	#[export(range = (0.0, 0.5))] smoothing_ratio: f32,
-	#[export(enum = (VIEW = 1, NORMAL = 2, OBJECT = 3))] alignment: AlignmentType,
-	#[export(enum = (X = 1, Y = 2, Z = 3))] axe: Axis,
-	#[export] color_start: Color,
-	#[export] color_end: Color,
-	#[export] color_curve: Option<Gd<Curve>>,
+	#[export]
+	#[init(val = true)]
+	emit: bool,
+
+	#[export]
+	#[init(val = 0.1)]
+	distance: f32,
+
+	#[export(range = (0.0, 99999.0))]
+	#[init(val = 20)]
+	segments: u32,
+
+	#[export]
+	#[init(val = 0.5)]
+	lifetime: f64,
+
+	#[export(range = (0.0, 99999.0))]
+	#[init(val = 0.5)]
+	base_width: f32,
+
+	#[export]
+	tiled_texture: bool,
+
+	#[export]
+	tiling: i32,
+
+	#[export]
+	width_curve: Option<Gd<Curve>>,
+
+	#[export(range = (0.0, 3.0))]
+	smoothing_iterations: i32,
+
+	#[export(range = (0.0, 0.5))]
+	#[init(val = 0.25)]
+	smoothing_ratio: f32,
+
+	#[export(enum = (VIEW = 1, NORMAL = 2, OBJECT = 3))]
+	#[init(val = AlignmentType::View)]
+	alignment: AlignmentType,
+
+	#[export(enum = (X = 1, Y = 2, Z = 3))]
+	#[init(val = Axis::Y)]
+	axe: Axis,
+
+	#[export]
+	#[init(val = Color::from_rgba(1.0, 1.0, 1.0, 1.0))]
+	color_start: Color,
+
+	#[export]
+	#[init(val = Color::from_rgba(1.0, 1.0, 1.0, 0.0))]
+	color_end: Color,
+
+	#[export]
+	color_curve: Option<Gd<Curve>>,
 }
 
 impl Trail3D {
@@ -250,7 +290,7 @@ impl Trail3D {
 
 		// surface_begin must be called this way since the normal method is unimplemented.
 		// See https://github.com/godot-rust/gdext/issues/156
-		self.immediate_mesh.call("surface_begin".into(), &[PrimitiveType::TRIANGLE_STRIP.to_variant(), Variant::nil().to()]);
+		self.immediate_mesh.call("surface_begin", &[PrimitiveType::TRIANGLE_STRIP.to_variant(), Variant::nil().to()]);
 
 		let mut index = 0;
 		let new_front_point = self.make_point_immutable(_t, first.age);
@@ -359,8 +399,8 @@ impl Trail3D {
 		let xpa: f32 = (x * x) - (2.0 * x) + 1.0;
 		let xpb: f32 = ((-x) * x) + (2.0 * x);
 		// transforms
-		let a1_t: Transform3D = a.transform.interpolate_with(b.transform, xi);
-		let b1_t: Transform3D = b.transform.interpolate_with(c.transform, x);
+		let a1_t: Transform3D = a.transform.interpolate_with(&b.transform, xi);
+		let b1_t: Transform3D = b.transform.interpolate_with(&c.transform, x);
 		// ages
 		let a1_a = a.age.lerp(b.age, xi as f64);
 		let b1_a = b.age.lerp(c.age, x as f64);
@@ -372,10 +412,10 @@ impl Trail3D {
 			];
 		} else {
 			// transforms
-			let a2_t  = a.transform.interpolate_with(b.transform, xpa);
-			let b2_t  = b.transform.interpolate_with(c.transform, xpb);
-			let a11_t = a1_t.interpolate_with(b1_t, x);
-			let b11_t = a1_t.interpolate_with(b1_t, xi);
+			let a2_t  = a.transform.interpolate_with(&b.transform, xpa);
+			let b2_t  = b.transform.interpolate_with(&c.transform, xpb);
+			let a11_t = a1_t.interpolate_with(&b1_t, x);
+			let b11_t = a1_t.interpolate_with(&b1_t, xi);
 			// ages
 			let a2_a  = a.age.lerp(b.age, xpa as f64);
 			let b2_a  = b.age.lerp(c.age, xpb as f64);
@@ -391,10 +431,10 @@ impl Trail3D {
 				]);
 			} else if self.smoothing_iterations == 3 {
 				// transforms
-				let a12_t  = a1_t.interpolate_with(b1_t, xpb);
-				let b12_t  = a1_t.interpolate_with(b1_t, xpa);
-				let a121_t = a11_t.interpolate_with(a2_t, x);
-				let b121_t = b11_t.interpolate_with(b2_t, x);
+				let a12_t  = a1_t.interpolate_with(&b1_t, xpb);
+				let b12_t  = a1_t.interpolate_with(&b1_t, xpa);
+				let a121_t = a11_t.interpolate_with(&a2_t, x);
+				let b121_t = b11_t.interpolate_with(&b2_t, x);
 				// ages
 				let a12_a  = a1_a.lerp(b1_a, xpb as f64);
 				let b12_a  = a1_a.lerp(b1_a, xpa as f64);
@@ -491,47 +531,11 @@ impl Trail3D {
 
 #[godot_api]
 impl IMeshInstance3D for Trail3D {
-	fn init(base: Base<MeshInstance3D>) -> Self {
-		Self {
-			base,
-
-			immediate_mesh: ImmediateMesh::new_gd(),
-
-			points: vec![],
-			always_update: false,
-
-			_target: None,
-			_a: None,
-			_b: None,
-			_c: None,
-			_temp_segment: vec![],
-			_points: vec![],
-
-			_points_last_id: 0,
-
-			emit: true,
-			distance: 0.1,
-			segments: 20,
-			lifetime: 0.5,
-			base_width: 0.5,
-			tiled_texture: false,
-			tiling: 0,
-			width_curve: None,
-			smoothing_iterations: 0,
-			smoothing_ratio: 0.25,
-			alignment: AlignmentType::View,
-			axe: Axis::Y,
-			color_start: Color::from_rgba(1.0, 1.0, 1.0, 1.0),
-			color_end: Color::from_rgba(1.0, 1.0, 1.0, 0.0),
-			color_curve: None,
-		}
-	}
-
 	fn ready(&mut self) {
 		self.base_mut().set_global_transform(Transform3D::IDENTITY);
 
 		let mesh = self.immediate_mesh.clone();
-		self.base_mut().set_mesh(mesh.upcast());
+		self.base_mut().set_mesh(&mesh);
 
 		self._target = self.base().get_parent_node_3d();
 		if self._target.is_none() {
