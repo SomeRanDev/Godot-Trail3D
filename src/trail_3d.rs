@@ -21,6 +21,16 @@ use godot::prelude::*;
 
 // ---
 
+trait SafeNormalize {
+	fn safe_normalized(self) -> Self;
+}
+
+impl SafeNormalize for Vector3 {
+	fn safe_normalized(self) -> Self { self.try_normalized().unwrap_or(Vector3::ZERO) }
+}
+
+// ---
+
 /// Used internally to configure `Trail3D.render_geometry` behavior.
 enum PointesRenderType {
 	Points,
@@ -205,8 +215,8 @@ impl Trail3D {
 				};
 				if let Some(camera) = camera {
 					let cam_pos = camera.get_global_transform().origin;
-					let path_direction = (point.transform.origin - point_prev.transform.origin).normalized();
-					normal = (cam_pos - (point.transform.origin + point_prev.transform.origin) / 2.0).cross(path_direction).normalized();
+					let path_direction = (point.transform.origin - point_prev.transform.origin).safe_normalized();
+					normal = (cam_pos - (point.transform.origin + point_prev.transform.origin) / 2.0).cross(path_direction).safe_normalized();
 				} else {
 					godot_error!("Trail3D: There is no camera in the scene.");
 				}
@@ -214,18 +224,18 @@ impl Trail3D {
 			AlignmentType::Normal => {
 				let basis = point.transform.basis;
 				normal = match self.axe {
-					Axis::X => basis.col_a().normalized(),
-					Axis::Y => basis.col_b().normalized(),
-					Axis::Z => basis.col_c().normalized()
+					Axis::X => basis.col_a().safe_normalized(),
+					Axis::Y => basis.col_b().safe_normalized(),
+					Axis::Z => basis.col_c().safe_normalized()
 				}
 			},
 			AlignmentType::Object => {
 				if let Some(target) = &self._target {
 					let basis = target.get_transform().basis;
 					normal = match self.axe {
-						Axis::X => basis.col_a().normalized(),
-						Axis::Y => basis.col_b().normalized(),
-						Axis::Z => basis.col_c().normalized()
+						Axis::X => basis.col_a().safe_normalized(),
+						Axis::Y => basis.col_b().safe_normalized(),
+						Axis::Z => basis.col_c().safe_normalized()
 					}
 				} else {
 					godot_error!("Trail3D: No parent found for trail.");
