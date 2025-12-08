@@ -6,6 +6,10 @@ It is compatible with GDScript, C#, and Rust!
 
 <img src="https://github.com/SomeRanDev/Godot-Trail3D/blob/main/demo.gif"/>
 
+## Alternatives
+
+This project is CPU-bound, but it has the benefit of being compatible with the Compatibility renderer. If you're making a game with the Forward/Mobile renderer, you should probably use [GPUTrail](https://github.com/celyk/GPUTrail) instead.
+
 ## Credits
 
 This is a port of [@axilirate](https://github.com/axilirate)'s [gist](https://gist.github.com/axilirate/96a3e77d597c2527582dbc79aecbab70).<br>
@@ -18,13 +22,13 @@ I also added support for a color gradient inspired by [KindoSaur's YouTube video
 
 ## Installation
 
-1) Install the [Rust Programming Language](https://www.rust-lang.org/) if you don't have it (you can check if you have it by running `cargo` on the command prompt).
+1. Install the [Rust Programming Language](https://www.rust-lang.org/) if you don't have it (you can check if you have it by running `cargo` on the command prompt).
 
-2) Download this repo.
+2. Download this repo.
 
-3) Run `BUILD.bat` (on Windows) or `BUILD.sh` (on Linux).
+3. Run `BUILD.bat` (on Windows) or `BUILD.sh` (on Linux).
 
-5) Finally, copy the `addons/SomeRanDev_Trail3D/` folder into your project's `addons/` folder.
+4. Finally, copy the `addons/SomeRanDev.Trail3D/` folder into your project's `addons/` folder.
 
 ## How to Use
 
