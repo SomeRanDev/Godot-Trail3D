@@ -1,6 +1,6 @@
-// Ported by Robert Borghese (SomeRanDev)
+// Ported by Maybee "SomeRanDev" Rezbit
 //
-// Tested on Godot 4.3 dev6
+// Tested on Godot 4.4.1
 //
 // Ported from axilirate's gist:
 // https://gist.github.com/axilirate/96a3e77d597c2527582dbc79aecbab70
@@ -163,11 +163,11 @@ pub struct Trail3D {
 	#[init(val = 0.25)]
 	smoothing_ratio: f32,
 
-	#[export(enum = (VIEW = 1, NORMAL = 2, OBJECT = 3))]
+	#[export(enum = (VIEW = 0, NORMAL = 1, OBJECT = 2))]
 	#[init(val = AlignmentType::View)]
 	alignment: AlignmentType,
 
-	#[export(enum = (X = 1, Y = 2, Z = 3))]
+	#[export(enum = (X = 0, Y = 1, Z = 2))]
 	#[init(val = Axis::Y)]
 	axe: Axis,
 
@@ -506,6 +506,16 @@ impl Trail3D {
 	#[func]
 	fn clear_trail_points(&mut self) {
 		self.points.clear();
+		self._points.clear();
+
+		self._a = None;
+		self._b = None;
+		self._c = None;
+		self._temp_segment.clear();
+
+		self._points_last_id = 0;
+
+		self.immediate_mesh.clear_surfaces();
 	}
 
 	/// Not really sure what this function does since it isn't used internally,

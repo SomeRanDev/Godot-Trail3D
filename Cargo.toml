@@ -1,6 +1,6 @@
 [package]
 name = "godot_trail_3d"
-authors = ["Robert Borghese (SomeRanDev)"]
+authors = ["Maybee \"SomeRanDev\" Rezbit"]
 description = "A native Godot addon that adds a Trail3D node to Godot."
 version = "1.0.0"
 edition = "2021"
@@ -12,4 +12,7 @@ keywords = ["godot", "gamedev"]
 crate-type = ["cdylib"]
 
 [dependencies]
-godot = "0.2.1"
+godot = { version = "0.3", features=["api-custom", "experimental-wasm", "lazy-function-tables"] }
+
+[features]
+nothreads = ["godot/experimental-wasm-nothreads"]
